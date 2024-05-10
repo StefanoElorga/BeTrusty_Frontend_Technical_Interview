@@ -1,8 +1,8 @@
+import Image from "next/image";
 import logo from "../assets/Logo.png";
 import avatar from "../assets/Avatar.png";
-import Image from "next/image";
 
-export default function Header() {
+const Header: React.FC = () => {
   return (
     <header>
       <div className="bg-black w-full px-6 py-4 flex flex-row justify-between items-center">
@@ -11,4 +11,6 @@ export default function Header() {
       </div>
     </header>
   );
-}
+};
+
+export default Header;

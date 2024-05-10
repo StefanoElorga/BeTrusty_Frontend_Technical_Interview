@@ -1,8 +1,13 @@
 import PropertyHeader from "./components/PropertyHeader";
-export default function Home() {
+import Slider from "./components/Slider";
+
+const Home: React.FC = () => {
   return (
     <main className="w-full">
       <PropertyHeader />
+      <Slider />
     </main>
   );
-}
+};
+
+export default Home;
