@@ -4,7 +4,7 @@ import share from "../assets/Share.png";
 
 const PropertyHeader: React.FC = () => {
   return (
-    <div className="w-full flex flex-row py-7 px-5 justify-between items-center">
+    <div className="w-full flex flex-row py-5 px-5 justify-between items-center">
       <p className="text-2xl font-bold">Frank Apart</p>
 
       <div className="flex flex-row gap-2.5">

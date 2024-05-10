@@ -8,12 +8,14 @@ import nextArrow from "../assets/Next-arrow.png";
 import prevArrow from "../assets/Prev-arrow.png";
 import { StaticImageData } from "next/image";
 
+//CREAMOS un "interface" donde guardamos y utilizaremos nuestras props para los botones del Slider.
 interface SlideButtonProps {
   onClick: () => void;
   arrow: StaticImageData;
   name: string;
 }
 
+//CREAMOS una Function Component para los botones del Slider, la función será dinamica.
 const SlideButton: React.FC<SlideButtonProps> = ({ onClick, arrow, name }) => {
   return (
     <button
@@ -26,16 +28,19 @@ const SlideButton: React.FC<SlideButtonProps> = ({ onClick, arrow, name }) => {
   );
 };
 
+//CREAMOS el componente Slider.
 const Slider: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<number>(0);
   const images: StaticImageData[] = [imgSlide1, imgSlide2, imgSlide3];
 
+  //FUNCION NEXT
   const nextSlide = () => {
     setCurrentImage((prevImage) =>
       prevImage === images.length - 1 ? 0 : prevImage + 1
     );
   };
 
+  //FUNCION PREV
   const prevSlide = () => {
     setCurrentImage((prevImage) =>
       prevImage === 0 ? images.length - 1 : prevImage - 1
