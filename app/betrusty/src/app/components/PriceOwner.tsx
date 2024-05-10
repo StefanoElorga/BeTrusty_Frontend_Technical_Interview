@@ -5,7 +5,7 @@ import edit from "../assets/Edit.png";
 const PriceOwner: React.FC = () => {
   return (
     //CONTAINER
-    <div className="w-full px-2 my-7 flex justify-center">
+    <div className="w-full px-2 my-7 flex justify-center md:justify-end md:px-4">
       {/* CARD */}
       <div className="w-full bg-transparent border-gray-400 border-2 rounded-xl max-w-80">
         {/* HEADER de la CARD */}
