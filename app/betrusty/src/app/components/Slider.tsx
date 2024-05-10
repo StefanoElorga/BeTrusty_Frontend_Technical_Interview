@@ -8,6 +8,24 @@ import nextArrow from "../assets/Next-arrow.png";
 import prevArrow from "../assets/Prev-arrow.png";
 import { StaticImageData } from "next/image";
 
+interface SlideButtonProps {
+  onClick: () => void;
+  arrow: StaticImageData;
+  name: string;
+}
+
+const SlideButton: React.FC<SlideButtonProps> = ({ onClick, arrow, name }) => {
+  return (
+    <button
+      onClick={onClick}
+      className="p-3.5 rounded-full border-white border-2"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+    >
+      <Image src={arrow} alt={name} />
+    </button>
+  );
+};
+
 const Slider: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<number>(0);
   const images: StaticImageData[] = [imgSlide1, imgSlide2, imgSlide3];
@@ -27,21 +45,8 @@ const Slider: React.FC = () => {
   return (
     <div className="w-full relative">
       <div className="absolute w-full  flex flex-row justify-between px-2.5 h-full items-center">
-        <button
-          onClick={prevSlide}
-          className="p-3.5 rounded-full border-white border-2"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
-        >
-          <Image src={prevArrow} alt="Prev" />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="p-3.5 rounded-full border-white border-2"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
-        >
-          <Image src={nextArrow} alt="Next" />
-        </button>
+        <SlideButton onClick={prevSlide} name="prev" arrow={prevArrow} />
+        <SlideButton onClick={nextSlide} name="next" arrow={nextArrow} />
       </div>
 
       <div className="w-full">
