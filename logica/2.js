@@ -43,10 +43,16 @@ const t9Keyboard = (value) => {
   };
 
   const splitCode = value.split("-");
-  console.log(splitCode);
 
-  const mappedArrayCode = splitCode.map((code) => code);
-  return;
+  const mappedArrayCode = splitCode.map((code) => {
+    for (let letter in keyboard) {
+      if (keyboard[letter] === code) {
+        return letter;
+      }
+    }
+  });
+  console.log(mappedArrayCode.join(""));
+  return mappedArrayCode.join("");
 };
 
-console.log(t9Keyboard("6-666-88-777-33-3-33-888"));
+t9Keyboard("6-666-88-777-33-3-33-888");
