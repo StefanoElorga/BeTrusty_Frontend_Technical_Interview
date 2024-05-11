@@ -1,8 +1,24 @@
 "use client";
 import Image from "next/image";
 import edit from "../assets/Edit.png";
-
+import "react-datepicker/dist/react-datepicker.css";
+import React, { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
 const PriceOwner: React.FC = () => {
+  const [checkInDate, setCheckInDate] = useState<Date | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+  const [totalDays, setTotalDays] = useState<number>(0);
+
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      const days = Math.ceil(
+        (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 3600 * 24)
+      );
+
+      setTotalDays(days);
+    }
+  }, [checkInDate, checkOutDate]);
+
   return (
     //CONTAINER
     <div className="w-full px-2 my-7 flex justify-center lg:justify-end lg:px-5 xl:px-12">
@@ -26,17 +42,29 @@ const PriceOwner: React.FC = () => {
         <div className="flex flex-row border-b-2 border-gray-400 w-full ">
           {/* check-in */}
           <div className="w-1/2">
-            <div className="flex flex-col px-2 py-4 text-center  border-r-2 border-gray-400">
+            <div className="flex flex-col px-2 py-4 text-center border-r-2 border-gray-400">
               <p className="text-base font-bold">CHECK-IN</p>
-              <p className="text-base font-normal">dd/mm/aaaa</p>
+              <DatePicker
+                selected={checkInDate}
+                onChange={(date) => setCheckInDate(date)}
+                dateFormat={"dd/mm/yyyy"}
+                className="bg-transparent w-full placeholder:text-white text-center"
+                placeholderText="dd/mm/aaaa"
+              />
             </div>
           </div>
 
           {/* check-out */}
           <div className="w-1/2">
-            <div className="flex flex-col px-2 py-4 text-center ">
+            <div className="flex flex-col px-2 py-4 text-center">
               <p className="text-base font-bold">CHECK-OUT</p>
-              <p className="text-base font-normal">dd/mm/aaaa</p>
+              <DatePicker
+                selected={checkOutDate}
+                onChange={(date) => setCheckOutDate(date)}
+                dateFormat={"dd/mm/yyyy"}
+                className="bg-transparent w-full placeholder:text-white text-center"
+                placeholderText="dd/mm/aaaa"
+              />
             </div>
           </div>
         </div>
@@ -44,7 +72,7 @@ const PriceOwner: React.FC = () => {
         {/* Cantidad de días */}
         <div className="flex justify-center items-center border-b-2 border-gray-400">
           <p className="font-normal text-base py-4">
-            Cantidad de días: <span className="font-bold">0</span>
+            Cantidad de días: <span className="font-bold">{totalDays}</span>
           </p>
         </div>
 
@@ -58,7 +86,8 @@ const PriceOwner: React.FC = () => {
         {/* Ingreso total */}
         <div className="flex justify-center items-center">
           <p className="font-normal text-base py-4">
-            Ingreso total: <span className="font-bold">$0 USD</span>
+            Ingreso total:{" "}
+            <span className="font-bold">${totalDays * 60} USD</span>
           </p>
         </div>
       </div>
