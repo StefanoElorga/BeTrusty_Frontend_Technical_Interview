@@ -6,6 +6,7 @@ import PriceOwner from "./components/PriceOwner";
 import CTA from "./components/CTA";
 import Services from "./components/Services";
 import Menu from "./components/Menu";
+import Galery from "./components/Galery";
 
 const Home: React.FC = () => {
   return (
@@ -14,9 +15,10 @@ const Home: React.FC = () => {
         <Header />
         <PropertyHeader />
         <Slider />
+        <Galery />
 
-        <div className="flex flex-col md:flex-row md:justify-between">
-          <div className="order-1 md:order-2">
+        <div className="flex flex-col lg:flex-row lg:justify-between">
+          <div className="order-1 lg:order-2">
             <PriceOwner />
             <CTA />
           </div>

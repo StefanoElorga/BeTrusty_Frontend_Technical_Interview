@@ -4,6 +4,7 @@ import Image from "next/image";
 import imgSlide1 from "../assets/Rectangle25.png";
 import imgSlide2 from "../assets/Rectangle26.png";
 import imgSlide3 from "../assets/Rectangle28.png";
+import imgSlide4 from "../assets/Rectangle24.png";
 import nextArrow from "../assets/Next-arrow.png";
 import prevArrow from "../assets/Prev-arrow.png";
 import { StaticImageData } from "next/image";
@@ -31,7 +32,12 @@ const SlideButton: React.FC<SlideButtonProps> = ({ onClick, arrow, name }) => {
 //CREAMOS el componente Slider.
 const Slider: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<number>(0);
-  const images: StaticImageData[] = [imgSlide1, imgSlide2, imgSlide3];
+  const images: StaticImageData[] = [
+    imgSlide1,
+    imgSlide2,
+    imgSlide3,
+    imgSlide4,
+  ];
 
   //FUNCION NEXT
   const nextSlide = () => {
@@ -48,13 +54,13 @@ const Slider: React.FC = () => {
   };
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative lg:hidden">
       <div className="absolute w-full  flex flex-row justify-between px-2.5 h-full items-center">
         <SlideButton onClick={prevSlide} name="prev" arrow={prevArrow} />
         <SlideButton onClick={nextSlide} name="next" arrow={nextArrow} />
       </div>
 
-      <div className="w-full">
+      <div className="w-full h-full">
         <Image
           src={images[currentImage]}
           alt={`Slide ${currentImage + 1}`}

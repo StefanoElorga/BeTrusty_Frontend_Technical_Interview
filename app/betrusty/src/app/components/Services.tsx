@@ -28,7 +28,7 @@ const Item: React.FC<ItemsProps> = ({ icon, name, description }) => {
 
 const Services: React.FC = () => {
   return (
-    <div className="w-full md:max-w-[600px] px-2 py-9  flex flex-col items-center order-2 md:order-1 md:px-5 md:items-start">
+    <div className="w-full lg:max-w-[600px] px-2 py-9  flex flex-col items-center order-2 lg:order-1 lg:px-5 xl:px-12 lg:items-start">
       <ol className=" flex flex-col gap-4 max-w-80">
         <Item
           icon={ubication}
@@ -55,7 +55,7 @@ const Services: React.FC = () => {
         />
       </ol>
 
-      <div className="max-w-80 md:max-w-full my-8">
+      <div className="max-w-80 lg:max-w-full my-8">
         <p className="pb-4 text-xl font-bold">Descripción</p>
         <p className="font-normal text-base">
           Este hermoso apartamento de 2 habitaciones se encuentra en el corazón
@@ -66,7 +66,7 @@ const Services: React.FC = () => {
         </p>
       </div>
 
-      <div className="w-full max-w-80 md:max-w-full">
+      <div className="w-full max-w-80 lg:max-w-full">
         <p className="font-bold text-xl mb-2">Propietario</p>
 
         <div className="flex flex-row gap-3 items-center">
