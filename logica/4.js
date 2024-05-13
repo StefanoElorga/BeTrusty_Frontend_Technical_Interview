@@ -1,6 +1,12 @@
 // Lee detalladamente la imagen "./code_example.png" y realiza un analisis de su funcionalidad, y como lo podrias mejorar
 //Pista, el codigo presentado handlea dos diferentes tipos de tokens (api token, session token)
 
+//MI EXPLICACION GENERAL:
+//CREE FUNCIONES PARA CONTROLAR ERRORES, ES MUY IMPORTANTE TENER UN CONTROL DE ERRORES EN NUESTRA API, ASI OBTENDREMOS ALGO MÁS ESPECIFICO, CON ESTO
+//PODEMOS AYUDAR AL USUARIO Y AL DEVELOPER A ENTENDER QUE ESTÁ PASANDO.
+//TAMBIEN CREE FUNCIONES PARA CONTROLAR EL USO EXCESIVO, POR EJEMPLO, LIMITAMOS LOS INTENTOS, TAMBIEN PODEMOS CASTIGAR AL USUARIO POR COMETER VARIOS ERRORES
+//POR EJEMPLO, DANDOLE MAS TIEMPO DE ESPERA Y ASÍ NO SATURAR EL SERVIDOR.
+
 import image from "./code_example.png";
 export const Layout = ({ children }) => {
   //agregamos una función para crear un "retraso exponencial", significa que en vez de reintentar una solicitud cada tiempo fijo
@@ -12,7 +18,6 @@ export const Layout = ({ children }) => {
   //tambien creamos un max. de intentos.
   const maxAttempts = 3; //intentos maximos.
   let attemptsCounter = 0; //contador de intentos
-  let remainingAttempts = maxAttempts - attemptsCounter;
 
   const {
     storageValue: auth_token,
@@ -25,33 +30,6 @@ export const Layout = ({ children }) => {
   const [homeData, setHomeData] = useState(undefined);
   const actualCurrency = JSON.parse(localStorage.getItem("currency"));
   const router = useRouter();
-
-  const updateCurrency = async (token) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const getCurrenciesOptions = await axios.get(
-        `
-            ${process.env.NEXT_PUBLIC_API}/api/v2/currencies/${actualCurrency.id}
-        `,
-        { ...config }
-      );
-      const currencyUpdated = getCurrenciesOptions.data;
-      if (actualCurrency.setValue !== currencyUpdated.setValue) {
-        const currencyUpdate = {
-          ...actualCurrency,
-          value: currencyUpdated.value,
-        };
-        return localStorage.setItem("currency", JSON.stringify(currencyUpdate));
-        //router.push(router.pathname, router.asPath);
-      }
-    } catch (error) {
-      console.log("error  updating 'currency':", error); //agregué un mensaje de error
-    }
-  };
 
   const setCurrency = async (token, id, session) => {
     const config = {
@@ -80,45 +58,14 @@ export const Layout = ({ children }) => {
           updateCurrency(token);
         }, delay);
         attemptsCounter++;
-      } else {
-        // Alcanzado el número máximo de intentos, enseñamos este mensaje.
-        alert("Hubo un error. Por favor, inténtalo de nuevo.", error);
+      }
+      // Alcanzado el número máximo de intentos, enseñamos este mensaje.
+      if (attemptsCounter === maxAttempts) {
+        alert(
+          "Hiciste muchos intentos. Por favor, inténtalo de nuevo más tarde."
+        );
       }
     }
-
-    //auto connect session
-    useEffect(() => {
-      if (auth_token && !useSession) {
-        autoConnectSession(true);
-        actualCurrency && setCurrency(auth_token, actualCurrency.id, true);
-      } else {
-        refreshToken(auth);
-        actualCurrency && setCurrency(auth, actualCurrency.id, false);
-      }
-      actualCurrency && updateCurrency(auth);
-    }, []);
-
-    //setLenguage prefered
-    useEffect(() => {
-      if (
-        useSession &&
-        useSession.language &&
-        userSession.language.code !== router.locale
-      ) {
-        router.push(router.pathname, router.asPath, {
-          locale: userSession.language.code,
-        });
-      }
-
-      useSession && userSession?.country_payment?.code === null && getGeoInfo();
-    }, [userSession]);
-
-    useEffect(() => {
-      if (auth) {
-        getHomeData(); //getProducts
-        getProducts(); //getProducts
-      } else getToken();
-    }, [auth]);
 
     //getTokenV1
     const getToken = async () => {
@@ -138,7 +85,7 @@ export const Layout = ({ children }) => {
           alert("tu sesión ha expirado. Por favor inicia sesion nuevamente.");
           redirectToLogin(); // podriamos crear una función que redirija a la pagina login
         } else {
-          //Otro tipo de error, podriamos intentar nuevamenta la solicitud.
+          //si obtenemos otro tipo de error, podriamos intentar nuevamenta la solicitud.
           const delay = backoff(attemptsCounter);
           setTimeout(() => {
             updateCurrency(token);
@@ -149,53 +96,23 @@ export const Layout = ({ children }) => {
       }
     };
 
-    //getProducts
+    //getProducts: creamos la funcion que estaba incompleta.
     const getProducts = async () => {
       //CREE ESTE TRY CATCH PARA TRAER LOS PRODUCTOS
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API}/api/v2/products`
         );
-
+        //si es exitoso, guardamos los productos.
         if (response.status === 200) {
           const productsData = response.data;
 
           setProducts(productsData);
-        } else {
-          console.error(
-            "Error al obtener los productos: respuesta inesperada del servidor"
-          );
         }
       } catch (error) {
+        //Avisamos al usuario que hubo un error
         console.error("Error al obtener los productos:", error);
         alert("Hubo un error al traer los productos! recarga la página.");
-      }
-    };
-
-    //auto connect
-    const autoConnectSession = async (first = false) => {
-      const auth_token2 = localStorage.getItem("auth_token");
-
-      if (!auth_token2) {
-        return disconnectSession();
-      } else {
-        const config = {
-          headers: { Authorization: `Bearer ${auth_token2}` },
-        };
-        try {
-          const sendVerificationCode = await axios.post(
-            `${process.env.NEXT_PUBLIC_API}/api/v2/auth/refresh`,
-            {},
-            config
-          );
-          const { data } = sendVerificationCode;
-          data.user && setuserSession(data.user);
-          data.acces_token && setAuth(data.acces_token);
-          data.acces_token && setAuthToken(data.acces_token);
-        } catch (error) {
-          first && disconnectSession();
-          //console.log(error);
-        }
       }
     };
 
@@ -214,27 +131,17 @@ export const Layout = ({ children }) => {
         const { data } = sendVerificationCode;
         data.acces_token && setAuth(data.acces_token);
       } catch (error) {
-        //console.log(error);
-      }
-    };
-
-    const getGeoInfo = async () => {
-      try {
-        const getGeo = await axios.get(
-          `https://ipapi.co/json/?key=${process.env.NEXT_PUBLIC_IPAPI}`,
-          {}
-        );
-        const { data } = getGeo;
-        const dd = await setCountryPayment(data.country_code);
-      } catch (error) {
+        //Consologueamos el error y advertimos al usuario que hubo uno
         console.log(error);
+        alert("hubo un error al refrescar tu token");
       }
     };
 
-    //MODIFICAMOS LA FUNCION SETCOUNTRYPAYMENT
+    //MODIFICAMOS LA FUNCION SETCOUNTRYPAYMENT:
     const setCountryPayment = async (code) => {
       const auth_token = localStorage.getItem("auth_token");
 
+      //control de error agregado: si no hay token, error de autenticación.
       if (!auth_token) {
         console.error(
           "No se encontró el token de autenticación en el almacenamiento local."
@@ -255,18 +162,15 @@ export const Layout = ({ children }) => {
           config
         );
 
+        //si es exitoso, alerta para avisar que lo fue.
         if (
           sendVerificationCode.status >= 200 &&
           sendVerificationCode.status < 300
         ) {
-          console.log("País de pago actualizado exitosamente.");
-        } else {
-          console.error(
-            "Error al actualizar el país de pago:",
-            sendVerificationCode.statusText
-          );
+          alert("País de pago actualizado exitosamente.");
         }
       } catch (error) {
+        //si hay error avisamos al usuario y consologueamos el error para identificarlo.
         console.error("Error al actualizar el país de pago:", error);
         alert(
           "Hubo un error al intentar actualizar el país de pago, por favor reintantalo mas tarde."
@@ -274,6 +178,7 @@ export const Layout = ({ children }) => {
       }
     };
 
+    //CREE una API que obtiene la homeData con control de errores:
     const getHomeData = async () => {
       try {
         const response = await axios.get(
@@ -293,35 +198,5 @@ export const Layout = ({ children }) => {
         console.error("Error al obtener los datos de inicio:", error);
       }
     };
-
-    //disconect session
-    const disconnectSession = async () => {
-      await closeSession();
-      setuserSession(undefined);
-      await getToken();
-      return router.push({
-        pathname: "/login",
-        query: { redirect: router.asPath },
-      });
-    };
-
-    const providerValue: TodoContextType = {
-      session: userSession,
-      setSession: setuserSession,
-      acces_token: auth,
-      winProducts: products,
-      disconnectUser: disconnectSession,
-      refreshSession: autoConnectSession,
-      homeData: homeData,
-      winBrokers: undefined,
-    };
-
-    return (
-      <SessionContext.Provider value={providerValue}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-      </SessionContext.Provider>
-    );
   };
 };
