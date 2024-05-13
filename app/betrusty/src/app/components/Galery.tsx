@@ -4,6 +4,7 @@ import imgGalery3 from "../assets/Rectangle28.png";
 import imgGalery4 from "../assets/Rectangle25.png";
 import galeryIcon from "../assets/GaleryIcon.png";
 import Image from "next/image";
+import { StaticImageData } from "next/image";
 
 const ShowAllPhotos: React.FC = () => {
   return (
@@ -14,6 +15,26 @@ const ShowAllPhotos: React.FC = () => {
           Mostrar todas las fotos
         </p>
       </div>
+    </div>
+  );
+};
+interface GaleryImages {
+  image: StaticImageData;
+  name: string;
+}
+
+const GaleryImages: React.FC<GaleryImages> = ({ image, name }) => {
+  return (
+    <div className="w-1/2">
+      <Image src={image} alt={name} className="w-full object-cover" />
+    </div>
+  );
+};
+
+const SeeDatails: React.FC = () => {
+  return (
+    <div className="w-1/2 bg-cyan-900 flex text-center items-center justify-center rounded-lg px-4">
+      <p>Ver los detalles de las habitaciones</p>
     </div>
   );
 };
@@ -33,35 +54,13 @@ const Galery: React.FC = () => {
 
         <div className="w-1/2 flex flex-col gap-2 xl:gap-4">
           <div className="flex flex-row gap-2 xl:gap-4">
-            <div className="w-1/2">
-              <Image
-                src={imgGalery2}
-                alt="imagen2"
-                className="w-full object-cover"
-              />
-            </div>
-
-            <div className="w-1/2 bg-cyan-900 flex text-center items-center justify-center rounded-lg px-4">
-              <p>Ver los detalles de las habitaciones</p>
-            </div>
+            <GaleryImages image={imgGalery2} name={"imagen2"} />
+            <SeeDatails />
           </div>
 
           <div className="flex flex-row gap-2 xl:gap-4">
-            <div className="w-1/2">
-              <Image
-                src={imgGalery3}
-                alt="imagen3"
-                className="w-full object-cover"
-              />
-            </div>
-
-            <div className="w-1/2">
-              <Image
-                src={imgGalery4}
-                alt="imagen4"
-                className="w-full object-cover"
-              />
-            </div>
+            <GaleryImages image={imgGalery3} name={"imagen3"} />
+            <GaleryImages image={imgGalery4} name={"imagen4"} />
           </div>
         </div>
       </div>
