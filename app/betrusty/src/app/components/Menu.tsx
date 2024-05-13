@@ -7,10 +7,11 @@ import notifications from "../assets/Notifications.png";
 import qrCode from "../assets/QrCode.png";
 import dashboard from "../assets/Dashboard.png";
 import settings from "../assets/Settings.png";
+import Link from "next/link";
 
 const Menu: React.FC = () => {
   return (
-    <div className="bg-black w-full px-6 py-4 flex flex-row items-center gap-5 justify-center order-2 sm:order-1 sm:flex-col sm:gap-0 sm:justify-between sm:w-24 sm:py-8 sticky top-0">
+    <div className="bg-black w-full px-6 py-4 flex flex-row items-center gap-5 justify-center order-2 sm:order-1 sm:flex-col sm:gap-0 sm:justify-between sm:w-24 sm:py-8 sticky top-0 sm:h-screen">
       <div className="flex flex-col gap-10">
         <Image src={menu} alt="top" className="hidden sm:flex" />
 
@@ -27,8 +28,9 @@ const Menu: React.FC = () => {
           <Image src={notifications} alt={"notifications"} />
         </div>
       </div>
-
-      <Image src={settings} alt="settings" />
+      <Link href={"/Configuration"}>
+        <Image src={settings} alt="settings" />
+      </Link>
     </div>
   );
 };

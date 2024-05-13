@@ -16,6 +16,7 @@ const PriceOwner: React.FC = () => {
   const [pricePerNight, setPricePerNight] = useState<number>(0);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedPrice, setEditedPrice] = useState<string>("");
+  const [isCalendarVisible, setIsCalendarVisible] = useState<boolean>(false);
 
   //UseEffect para escuchar los cambios que hace el usuario en checkInDate y checkOutDate
   useEffect(() => {
@@ -47,6 +48,14 @@ const PriceOwner: React.FC = () => {
     //Guarda el nuevo valor y cierra el input de editar, en caso de pasar las primeras condiciones.
     setIsEditing(false);
     setPricePerNight(parseFloat(editedPrice));
+  };
+
+  const handleCheckInFocus = () => {
+    setIsCalendarVisible(true);
+  };
+
+  const handleCheckOutFocus = () => {
+    setIsCalendarVisible(false);
   };
 
   return (
@@ -108,6 +117,7 @@ const PriceOwner: React.FC = () => {
                 selected={checkInDate}
                 onChange={(date) => setCheckInDate(date)}
                 dateFormat={"dd/mm/yyyy"}
+                onFocus={handleCheckInFocus}
                 className="bg-transparent w-full placeholder:text-white text-center"
                 placeholderText="dd/mm/aaaa"
               />
@@ -122,6 +132,10 @@ const PriceOwner: React.FC = () => {
                 selected={checkOutDate}
                 onChange={(date) => setCheckOutDate(date)}
                 dateFormat={"dd/mm/yyyy"}
+                onFocus={handleCheckOutFocus}
+                startDate={checkInDate}
+                endDate={checkOutDate}
+                minDate={checkInDate}
                 className="bg-transparent w-full placeholder:text-white text-center"
                 placeholderText="dd/mm/aaaa"
               />
